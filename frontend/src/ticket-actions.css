@@ -1,0 +1,90 @@
+.ticket-actions {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    margin-top: 4px
+}
+
+.ticket-actions button,
+.secondary-button {
+    border: 1px solid #cbd8cf;
+    background: #fff;
+    color: #416655;
+    border-radius: 2px;
+    padding: 6px 8px;
+    font: 500 10px 'Manrope';
+    cursor: pointer
+}
+
+.ticket-actions button:hover,
+.secondary-button:hover {
+    background: #edf4df
+}
+
+.ticket-actions .delete-button {
+    color: #a24a38;
+    border-color: #ecd0c8
+}
+
+.ticket-actions .delete-button:hover {
+    background: #f8e7e0
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(23, 63, 50, .38);
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    z-index: 10
+}
+
+.edit-modal {
+    width: min(620px, 100%);
+    display: grid;
+    gap: 18px;
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 30px 34px;
+    box-shadow: 0 24px 70px rgba(23, 63, 50, .2)
+}
+
+.edit-modal .panel-heading {
+    margin-bottom: 2px
+}
+
+.close-button {
+    border: 0;
+    background: transparent;
+    color: #718078;
+    font-size: 25px;
+    line-height: 1;
+    cursor: pointer
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px
+}
+
+.secondary-button {
+    padding: 14px 17px;
+    font-size: 12px
+}
+
+.modal-actions .primary-button {
+    justify-self: auto
+}
+
+@media(max-width:800px) {
+    .ticket-actions {
+        flex-wrap: wrap
+    }
+
+    .edit-modal {
+        padding: 24px 20px
+    }
+}

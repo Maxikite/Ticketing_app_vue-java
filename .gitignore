@@ -1,0 +1,17 @@
+node_modules/
+dist/
+target/
+backend/data/*.mv.db
+backend/data/*.trace.db
+
+.idea/
+.vscode/
+*.iml
+
+.env
+.env.*
+!.env.example
+*.log
+
+.DS_Store
+Thumbs.db
