@@ -40,7 +40,7 @@ function handleDelete(ticket) {
 
     <div class="list-toolbar">
       <div>
-        <span class="section-kicker">02 / SUIVI</span>
+        <span class="section-kicker"> SUIVI</span>
         <h2>Vos demandes</h2>
       </div>
       <select :value="filter" @change="notifyFilter">

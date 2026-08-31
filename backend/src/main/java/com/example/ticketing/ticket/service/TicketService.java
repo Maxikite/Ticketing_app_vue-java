@@ -28,6 +28,12 @@ public class TicketService {
             ticket.setPriority("MEDIUM");
         }
         ticket.setPriority(ticket.getPriority().toUpperCase(Locale.ROOT));
+
+        if (ticket.getStatus() == null || ticket.getStatus().isBlank()) {
+            ticket.setStatus("OPEN");
+        }
+        ticket.setStatus(ticket.getStatus().toUpperCase(Locale.ROOT));
+
         return repository.save(ticket);
     }
 
@@ -39,6 +45,9 @@ public class TicketService {
             ticket.setPriority(changes.getPriority() == null || changes.getPriority().isBlank()
                     ? "MEDIUM"
                     : changes.getPriority().toUpperCase(Locale.ROOT));
+            ticket.setStatus(changes.getStatus() == null || changes.getStatus().isBlank()
+                    ? "OPEN"
+                    : changes.getStatus().toUpperCase(Locale.ROOT));
             return repository.save(ticket);
         });
     }

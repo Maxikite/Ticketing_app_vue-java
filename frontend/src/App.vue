@@ -149,7 +149,7 @@ onMounted(loadTickets)
 
       <section v-if="activePage === 'new'" class="new-layout">
         <div class="form-panel">
-          <div class="panel-heading"><div><span class="section-kicker">01 / NOUVELLE DEMANDE</span><h2>Quel est le sujet ?</h2></div><span class="required-note">Tous les champs sont requis</span></div>
+          <div class="panel-heading"><div><span class="section-kicker">NOUVELLE DEMANDE</span><h2>Quel est le sujet ?</h2></div><span class="required-note">Tous les champs sont requis</span></div>
           <form @submit.prevent="createTicket">
             <label>Titre de la demande<input v-model="form.title" type="text" placeholder="Ex. Accès impossible au tableau de bord" /></label>
             <label>Décrivez le problème<textarea v-model="form.description" rows="6" placeholder="Ajoutez les détails utiles pour que l'équipe puisse vous aider..."></textarea></label>
