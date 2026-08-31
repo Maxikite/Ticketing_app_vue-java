@@ -1,5 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import AllTicketsPage from './pages/AllTicketsPage.vue'
+import EditTicketPage from './pages/EditTicketPage.vue'
 
 const API_URL = 'http://localhost:8080/api/tickets'
 const activePage = ref('new')
@@ -8,21 +10,14 @@ const filter = ref('ALL')
 const loading = ref(false)
 const error = ref('')
 const success = ref('')
-const form = ref({ title: '', description: '', priority: 'MEDIUM', requester: '' })
+const form = ref({ title: '', description: '', priority: 'MEDIUM', requester: '', status: 'OPEN' })
 const editingTicket = ref(null)
-const editForm = ref({ title: '', description: '', priority: 'MEDIUM', requester: '' })
+const editForm = ref({ title: '', description: '', priority: 'MEDIUM', requester: '', status: 'OPEN' })
 
 const filteredTickets = computed(() => {
   if (filter.value === 'ALL') return tickets.value
   return tickets.value.filter((ticket) => ticket.status === filter.value)
 })
-
-const openCount = computed(() => tickets.value.filter((ticket) => ticket.status === 'OPEN').length)
-const progressCount = computed(() => tickets.value.filter((ticket) => ticket.status === 'IN_PROGRESS').length)
-
-function formatDate(value) {
-  return new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(value))
-}
 
 async function loadTickets() {
   loading.value = true
@@ -57,7 +52,7 @@ async function createTicket() {
     }
     const ticket = await response.json()
     tickets.value = [ticket, ...tickets.value]
-    form.value = { title: '', description: '', priority: 'MEDIUM', requester: '' }
+    form.value = { title: '', description: '', priority: 'MEDIUM', requester: '', status: 'OPEN' }
     success.value = 'Ticket créé et enregistré.'
     activePage.value = 'tickets'
   } catch (exception) {
@@ -67,7 +62,13 @@ async function createTicket() {
 
 function startEditing(ticket) {
   editingTicket.value = ticket
-  editForm.value = { title: ticket.title, description: ticket.description, priority: ticket.priority, requester: ticket.requester }
+  editForm.value = {
+    title: ticket.title,
+    description: ticket.description,
+    priority: ticket.priority,
+    requester: ticket.requester,
+    status: ticket.status,
+  }
   error.value = ''
   success.value = ''
 }
@@ -93,6 +94,7 @@ async function updateTicket() {
     tickets.value = tickets.value.map((ticket) => ticket.id === updatedTicket.id ? updatedTicket : ticket)
     editingTicket.value = null
     success.value = 'Ticket modifié.'
+    activePage.value = 'tickets'
   } catch (exception) {
     error.value = `${exception.message} Vérifiez que le backend est lancé.`
   }
@@ -134,7 +136,13 @@ onMounted(loadTickets)
     </aside>
 
     <main class="main-content">
-      <header class="topbar"><div><p class="eyebrow">CENTRE DE SUPPORT</p><h1>{{ activePage === 'new' ? 'Créer une demande' : 'Vue d’ensemble' }}</h1></div><div class="date-stamp">{{ new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date()) }}</div></header>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">CENTRE DE SUPPORT</p>
+          <h1>{{ activePage === 'new' ? 'Créer une demande' : 'Vue d’ensemble' }}</h1>
+        </div>
+        <div class="date-stamp">{{ new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date()) }}</div>
+      </header>
 
       <div v-if="error" class="alert alert-error">{{ error }}</div>
       <div v-if="success" class="alert alert-success">{{ success }}</div>
@@ -152,27 +160,28 @@ onMounted(loadTickets)
         <div class="aside-note"><h3>Une demande claire, une réponse plus rapide.</h3><p>Décrivez ce que vous essayiez de faire et ce qui s'est passé. Notre équipe reviendra vers vous dès que possible.</p><div class="note-rule"></div><p class="small-copy">Temps de réponse moyen<br /><strong>moins de 24 heures</strong></p></div>
       </section>
 
-      <section v-else class="tickets-page">
-        <div class="stats"><div><span class="stat-label">TOTAL</span><strong>{{ tickets.length }}</strong><span class="stat-caption">demandes</span></div><div><span class="stat-label">OUVERTS</span><strong>{{ openCount }}</strong><span class="stat-caption">à traiter</span></div><div><span class="stat-label">EN COURS</span><strong>{{ progressCount }}</strong><span class="stat-caption">actuellement</span></div></div>
-        <div class="list-toolbar"><div><span class="section-kicker">02 / SUIVI</span><h2>Vos demandes</h2></div><select v-model="filter"><option value="ALL">Tous les statuts</option><option value="OPEN">Ouverts</option><option value="IN_PROGRESS">En cours</option><option value="RESOLVED">Résolus</option></select></div>
-        <div v-if="loading" class="empty-state">Chargement des demandes...</div>
-        <div v-else-if="!filteredTickets.length" class="empty-state"><strong>Aucun ticket à afficher</strong><span>Créez votre première demande pour la voir apparaître ici.</span></div>
-        <div v-else class="ticket-list"><article v-for="ticket in filteredTickets" :key="ticket.id" class="ticket-row"><div class="ticket-id">#{{ String(ticket.id).padStart(4, '0') }}</div><div class="ticket-main"><h3>{{ ticket.title }}</h3><p>{{ ticket.description }}</p><span>Par {{ ticket.requester }} · {{ formatDate(ticket.createdAt) }}</span></div><div class="ticket-meta"><span :class="['priority', ticket.priority.toLowerCase()]">{{ ticket.priority }}</span><span :class="['ticket-status', ticket.status.toLowerCase()]">{{ ticket.status === 'OPEN' ? 'Ouvert' : ticket.status === 'IN_PROGRESS' ? 'En cours' : 'Résolu' }}</span><div class="ticket-actions"><button title="Modifier le ticket" @click="startEditing(ticket)">Modifier</button><button class="delete-button" title="Supprimer le ticket" @click="deleteTicket(ticket)">Supprimer</button></div></div></article></div>
-      </section>
+      <AllTicketsPage
+        v-else-if="activePage === 'tickets'"
+        :tickets="tickets"
+        :filtered-tickets="filteredTickets"
+        :filter="filter"
+        :loading="loading"
+        @update:filter="filter = $event"
+        @edit-ticket="startEditing"
+        @delete-ticket="deleteTicket"
+      />
+
     </main>
   </div>
 
-  <div v-if="editingTicket" class="modal-backdrop" @click.self="cancelEditing">
-    <form class="edit-modal" @submit.prevent="updateTicket">
-      <div class="panel-heading"><div><span class="section-kicker">MODIFICATION</span><h2>Modifier le ticket</h2></div><button class="close-button" type="button" aria-label="Fermer" @click="cancelEditing">×</button></div>
-      <label>Titre de la demande<input v-model="editForm.title" type="text" /></label>
-      <label>Décrivez le problème<textarea v-model="editForm.description" rows="5"></textarea></label>
-      <div class="field-row"><label>Votre nom<input v-model="editForm.requester" type="text" /></label><label>Priorité<select v-model="editForm.priority"><option value="LOW">Basse</option><option value="MEDIUM">Normale</option><option value="HIGH">Haute</option><option value="URGENT">Urgente</option></select></label></div>
-      <div class="modal-actions"><button class="secondary-button" type="button" @click="cancelEditing">Annuler</button><button class="primary-button" type="submit">Enregistrer <span>→</span></button></div>
-    </form>
-  </div>
+  <EditTicketPage
+    v-if="editingTicket"
+    :ticket="editingTicket"
+    :form="editForm"
+    @cancel="cancelEditing"
+    @save="updateTicket"
+    @update:form="editForm = $event"
+  />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
