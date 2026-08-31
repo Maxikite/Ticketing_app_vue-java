@@ -62,7 +62,7 @@ function handleDelete(ticket) {
         <div class="ticket-main">
           <h3>{{ ticket.title }}</h3>
           <p>{{ ticket.description }}</p>
-          <span>Par {{ ticket.requester }} · {{ formatDate(ticket.createdAt) }}</span>
+          <span>Par {{ ticket.requester }} · Assigné à {{ ticket.assignee || 'Aucun' }} · {{ formatDate(ticket.createdAt) }}</span>
         </div>
         <div class="ticket-meta">
           <span :class="['priority', ticket.priority.toLowerCase()]">{{ ticket.priority }}</span>

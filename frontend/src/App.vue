@@ -10,9 +10,10 @@ const filter = ref('ALL')
 const loading = ref(false)
 const error = ref('')
 const success = ref('')
+const EMPLOYEES = ['Alice Martin', 'Lucas Bernard', 'Sophie Dubois']
 const form = ref({ title: '', description: '', priority: 'MEDIUM', requester: '', status: 'OPEN' })
 const editingTicket = ref(null)
-const editForm = ref({ title: '', description: '', priority: 'MEDIUM', requester: '', status: 'OPEN' })
+const editForm = ref({ title: '', description: '', priority: 'MEDIUM', requester: '', assignee: EMPLOYEES[0], status: 'OPEN' })
 
 const filteredTickets = computed(() => {
   if (filter.value === 'ALL') return tickets.value
@@ -67,6 +68,7 @@ function startEditing(ticket) {
     description: ticket.description,
     priority: ticket.priority,
     requester: ticket.requester,
+    assignee: ticket.assignee || EMPLOYEES[0],
     status: ticket.status,
   }
   error.value = ''
@@ -153,7 +155,10 @@ onMounted(loadTickets)
           <form @submit.prevent="createTicket">
             <label>Titre de la demande<input v-model="form.title" type="text" placeholder="Ex. Accès impossible au tableau de bord" /></label>
             <label>Décrivez le problème<textarea v-model="form.description" rows="6" placeholder="Ajoutez les détails utiles pour que l'équipe puisse vous aider..."></textarea></label>
-            <div class="field-row"><label>Votre nom<input v-model="form.requester" type="text" placeholder="Ex. Camille Martin" /></label><label>Priorité<select v-model="form.priority"><option value="LOW">Basse</option><option value="MEDIUM">Normale</option><option value="HIGH">Haute</option><option value="URGENT">Urgente</option></select></label></div>
+            <div class="field-row">
+              <label>Votre nom<input v-model="form.requester" type="text" placeholder="Ex. Camille Martin" /></label>
+              <label>Priorité<select v-model="form.priority"><option value="LOW">Basse</option><option value="MEDIUM">Normale</option><option value="HIGH">Haute</option><option value="URGENT">Urgente</option></select></label>
+            </div>
             <button class="primary-button" type="submit">Envoyer la demande <span>→</span></button>
           </form>
         </div>

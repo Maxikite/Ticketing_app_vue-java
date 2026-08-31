@@ -24,6 +24,7 @@ public class Ticket {
     @NotBlank
     private String requester;
 
+    private String assignee = "Aucun";
     private String priority = "MEDIUM";
     private String status = "OPEN";
     private Instant createdAt;
@@ -65,6 +66,14 @@ public class Ticket {
 
     public void setRequester(String requester) {
         this.requester = requester;
+    }
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
     }
 
     public String getPriority() {

@@ -34,6 +34,10 @@ public class TicketService {
         }
         ticket.setStatus(ticket.getStatus().toUpperCase(Locale.ROOT));
 
+        if (ticket.getAssignee() == null || ticket.getAssignee().isBlank()) {
+            ticket.setAssignee("Aucun");
+        }
+
         return repository.save(ticket);
     }
 
@@ -42,6 +46,9 @@ public class TicketService {
             ticket.setTitle(changes.getTitle());
             ticket.setDescription(changes.getDescription());
             ticket.setRequester(changes.getRequester());
+            ticket.setAssignee(changes.getAssignee() == null || changes.getAssignee().isBlank()
+                    ? "Aucun"
+                    : changes.getAssignee());
             ticket.setPriority(changes.getPriority() == null || changes.getPriority().isBlank()
                     ? "MEDIUM"
                     : changes.getPriority().toUpperCase(Locale.ROOT));

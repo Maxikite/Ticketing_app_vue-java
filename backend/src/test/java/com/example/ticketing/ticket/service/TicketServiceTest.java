@@ -38,6 +38,7 @@ class TicketServiceTest {
         existing.setTitle("Ancien titre");
         existing.setDescription("Ancienne desc");
         existing.setRequester("Alice");
+        existing.setAssignee("Alice Martin");
         existing.setPriority("MEDIUM");
         existing.setStatus("OPEN");
 
@@ -45,6 +46,7 @@ class TicketServiceTest {
         changes.setTitle("Nouveau titre");
         changes.setDescription("Nouvelle desc");
         changes.setRequester("Bob");
+        changes.setAssignee("Lucas Bernard");
         changes.setPriority("HIGH");
         changes.setStatus("IN_PROGRESS");
 
@@ -57,5 +59,6 @@ class TicketServiceTest {
         assertTrue(updated.isPresent());
         assertEquals("IN_PROGRESS", updated.get().getStatus());
         assertEquals("HIGH", updated.get().getPriority());
+        assertEquals("Lucas Bernard", updated.get().getAssignee());
     }
 }
